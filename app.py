@@ -3,7 +3,7 @@ import io, json, re
 from collections import defaultdict
 from typing import Any
 import pandas as pd
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
 
 app = FastAPI(title="AEE-CBP | Automotive Bus Protocol Analyzer", version="1.0.0")
@@ -109,7 +109,7 @@ def home(): return HTML
 def health(): return {"status":"ok","service":"AEE-CBP","version":"1.0.0"}
 
 @app.post("/api/analyze")
-async def api_analyze(file: UploadFile=File(...),config: str="{}"):
+async def api_analyze(file: UploadFile=File(...),config: str=Form("{}")):
     name=(file.filename or "").strip()
     ext=name.rsplit(".",1)[-1].lower() if "." in name else ""
     if ext not in {"csv","asc"}: raise HTTPException(415,"Upload a .csv or .asc file")
